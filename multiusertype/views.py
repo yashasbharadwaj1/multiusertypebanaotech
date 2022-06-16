@@ -28,8 +28,14 @@ def register(request):
         pincode=request.POST['pincode']
         patient=request.POST['patient']
         doctor=request.POST['doctor']
-        
+        if patient == '' and doctor == '':
+            messages.info(request,'you should enter P or D dont leave these sections empty')
+            return redirect('account:register')
        
+
+
+
+
         if password != password2:
             messages.info(request,'both passwords are not matching')
             return redirect('account:register')
@@ -52,7 +58,7 @@ def register(request):
 
 
     else:
-       return render(request,'register.html',)
+       return render(request,'register.html')
 
 
 def login_view(request):
@@ -63,10 +69,10 @@ def login_view(request):
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
             user = authenticate(username=username, password=password)
-            if user is not None and user.is_Patient=='Patient':
+            if user is not None and user.is_Patient=='P':
                 login(request, user)
                 return redirect('account:patient')
-            elif user is not None and user.is_Doctor=='Doctor':
+            elif user is not None and user.is_Doctor=='D':
                 login(request, user)
                 return redirect('account:doctor')
             else:
@@ -86,7 +92,7 @@ def patient(request):
 def doctor(request):
     return render(request,'doctor.html')
 
-@login_required(login_url='login_view')
+@login_required(login_url='account:login_view')
 def logout(request):
     auth.logout(request)
-    return redirect('login_view')
+    return redirect('account:login_view')
