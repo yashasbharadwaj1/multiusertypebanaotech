@@ -1,1 +1,17 @@
-im single
+{% extends "../base/base.html" %}
+{% block title %}
+single post
+{% endblock %}
+{% block content %}
+
+
+<div class="jumbotron">
+    <h1 class="display-4">{{post.title}}</h1>
+    <p class="lead">{{post.summary}}</p>
+    <p class="lead">{{post.publish}}</p>
+    <hr class="my-4">
+    <p>{{post.body|safe}}</p>
+  
+  </div>
+
+{% endblock %}
