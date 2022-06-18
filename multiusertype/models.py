@@ -12,3 +12,4 @@ class User(AbstractUser):
     city=models.CharField(max_length=400,default='city')
     state=models.CharField(max_length=400,default='state')
     pincode=models.IntegerField(default=0)
+

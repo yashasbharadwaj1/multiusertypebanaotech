@@ -2,9 +2,11 @@ from django.shortcuts import render,redirect
 from .forms import LoginForm
 from django.contrib.auth import authenticate,login
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import auth
+from django.contrib.auth.models import auth,Group,Permission
+from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from .models import User
+from blog.models import Post,Category
 # Create your views here.
 def index(request):
     return render(request, 'index.html')
@@ -49,10 +51,22 @@ def register(request):
            
 
             else:
-                user = User.objects.create_user(username=username,email=email,password=password,profileimg=profileimg,first_name=first_name,last_name=last_name,
-                Area=Area,city=city,state=state,pincode=pincode,is_Patient=patient,is_Doctor=doctor
+                
+                if doctor == 'D':
+                    
+                    user = User.objects.create_user(username=username,email=email,password=password,profileimg=profileimg,first_name=first_name,last_name=last_name,
+                Area=Area,city=city,state=state,pincode=pincode,is_Patient=patient,is_Doctor=doctor,is_staff=True
                 )
-                user.save() 
+                    user.save()
+                
+                if patient =='P':
+                    
+                    user = User.objects.create_user(username=username,email=email,password=password,profileimg=profileimg,first_name=first_name,last_name=last_name,
+                Area=Area,city=city,state=state,pincode=pincode,is_Patient=patient,is_Doctor=doctor
+                )    
+                    user.save()
+
+                
                 return redirect('account:login_view')
 
 
@@ -64,15 +78,56 @@ def register(request):
 def login_view(request):
     form = LoginForm(request.POST or None)
     msg = None
+
+    
+    doctor_group, created = Group.objects.get_or_create(name="Doctor")
+    patient_group, created = Group.objects.get_or_create(name="Patient")
+    content_type = ContentType.objects.get_for_model(Post)
+    post_permission = Permission.objects.filter(content_type=content_type)
+    for perm in post_permission:
+        if perm.codename == "delete_post":
+            doctor_group.permissions.add(perm) 
+        elif perm.codename == "change_post":
+            doctor_group.permissions.add(perm)
+        elif perm.codename == "add_post":
+            doctor_group.permissions.add(perm)
+        else:
+            doctor_group.permissions.add(perm)
+            patient_group.permissions.add(perm)
+
+
+    secondcontent_type = ContentType.objects.get_for_model(Category)
+    category_permission= Permission.objects.filter(content_type=secondcontent_type)
+    for perm in category_permission:
+        if perm.codename == "add_category":
+            doctor_group.permissions.add(perm)
+        elif perm.codename == "change_category":
+            doctor_group.permissions.add(perm)
+        elif perm.codename == "delete_category":
+            doctor_group.permissions.add(perm)
+        else:
+            doctor_group.permissions.add(perm)
+            patient_group.permissions.add(perm)
+
+    
     if request.method == 'POST':
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
             user = authenticate(username=username, password=password)
             if user is not None and user.is_Patient=='P':
+                user.groups.add(patient_group)
+                user.save()
+
+
                 login(request, user)
                 return redirect('account:patient')
             elif user is not None and user.is_Doctor=='D':
+                user.groups.add(doctor_group)
+                user.save()
+
+
+
                 login(request, user)
                 return redirect('account:doctor')
             else:
