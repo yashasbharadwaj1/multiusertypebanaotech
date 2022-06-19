@@ -2,7 +2,7 @@ from django.db import models
 from django.utils import timezone
 from multiusertype.models import User
 from django.urls import reverse
-from ckeditor_uploader.fields import RichTextUploadingField
+#from ckeditor_uploader.fields import RichTextUploadingField
 # Create your models here.
 
 class Category(models.Model):
@@ -16,26 +16,31 @@ class Post(models.Model):
 
     class NewManager(models.Manager):
         def get_queryset(self):
-            return super().get_queryset() .filter(status='published')
+            return super().get_queryset() .filter(publish_status='P')
 
-    options = (
-        ('draft', 'Draft'),
-        ('published', 'Published'),
-    )
+    #options = (
+        #('draft', 'Draft'),
+        #('published', 'Published'),
+    #)
 
     
     title = models.CharField(max_length=250)
+
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='blog_posts',default=4)
+
+
     postimg=models.ImageField(upload_to='post_images',default='Success.png')
     category = models.ForeignKey(
         Category, on_delete=models.PROTECT, default=1)   
-    summary = models.TextField(null=True)
-    content = RichTextUploadingField(blank=False)
+    summary = models.TextField(blank=False,default='some summary')
+    content =models.TextField(blank=False,default='some content')
     slug = models.SlugField(max_length=250, unique_for_date='publish')
     publish = models.DateTimeField(default=timezone.now)
+    publish_status = models.CharField(max_length=15 ,default='pub')
+    draft_status = models.CharField(max_length=15,default='draf')
 
-    status = models.CharField(max_length=10, choices=options, default='draft')
+
     newmanager = NewManager()  # custom manager
     objects = models.Manager()  # default manager
     def get_absolute_url(self):

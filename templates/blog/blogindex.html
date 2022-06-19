@@ -15,8 +15,9 @@ all post
         </div>
         {% for post in allposts %}
         <div class="card" style="width: 18rem;">
+          <img class="card-img-top" src="{{post.postimg.url}}" alt="Card image cap">
             <a class="text-dark" href="{{post.get_absolute_url}}">
-            <img class="card-img-top" src="{{post.postimg.url}}" alt="Card image cap">
+            
             <div class="card-body">
               <h5 class="card-title">{{post.title|truncatechars:50}}</h5>
               <p class="card-text">{{post.summary|truncatewords:15 }}</p>

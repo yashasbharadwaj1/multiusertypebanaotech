@@ -85,15 +85,19 @@ def login_view(request):
     content_type = ContentType.objects.get_for_model(Post)
     post_permission = Permission.objects.filter(content_type=content_type)
     for perm in post_permission:
-        if perm.codename == "delete_post":
+        if perm.codename == "add_post":
             doctor_group.permissions.add(perm) 
-        elif perm.codename == "change_post":
-            doctor_group.permissions.add(perm)
-        elif perm.codename == "add_post":
-            doctor_group.permissions.add(perm)
-        else:
+        elif perm.codename == "view_post":
             doctor_group.permissions.add(perm)
             patient_group.permissions.add(perm)
+        elif perm.codename == "delete_post":
+            doctor_group.permissions.remove(perm)
+            patient_group.permissions.remove(perm)
+        else:
+            doctor_group.permissions.remove(perm)
+            patient_group.permissions.remove(perm)
+
+       
 
 
     secondcontent_type = ContentType.objects.get_for_model(Category)
@@ -101,13 +105,15 @@ def login_view(request):
     for perm in category_permission:
         if perm.codename == "add_category":
             doctor_group.permissions.add(perm)
-        elif perm.codename == "change_category":
-            doctor_group.permissions.add(perm)
-        elif perm.codename == "delete_category":
-            doctor_group.permissions.add(perm)
-        else:
+        elif perm.codename == "view_category":
             doctor_group.permissions.add(perm)
             patient_group.permissions.add(perm)
+        elif perm.codename == "delete_category":
+            patient_group.permissions.remove(perm)
+            doctor_group.permissions.remove(perm)
+        else:
+            doctor_group.permissions.remove(perm)
+            patient_group.permissions.remove(perm)
 
     
     if request.method == 'POST':

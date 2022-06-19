@@ -39,8 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'multiusertype',
-    'ckeditor',
-    'ckeditor_uploader',
+    #'ckeditor',
+    #'ckeditor_uploader',
     'blog',
     
 ]

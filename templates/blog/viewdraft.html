@@ -1,0 +1,32 @@
+{% extends "../base/base.html" %}
+{% block title %}
+upload post
+{% endblock %}
+
+{% block content %}
+
+<div class="album py-5 bg-light">
+    <div class="container">
+      <div class="row">
+        <div class="col-12 pb-5">
+          <h1>List of all posts having draft status by you</h1>
+        </div>
+        {% for post in draftposts %}
+        <div class="card" style="width: 18rem;">
+          <img class="card-img-top" src="{{post.postimg.url}}" alt="Card image cap">
+            <a class="text-dark" href="{{post.get_absolute_url}}">
+            
+            <div class="card-body">
+              <h5 class="card-title">{{post.title|truncatechars:50}}</h5>
+              <p class="card-text">{{post.summary|truncatewords:15 }}</p>
+             
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+
+
+{% endblock %}
