@@ -4,15 +4,18 @@ from django.views.generic import ListView
 from .forms import PostSearchForm
 from django.db.models import Q 
 # Create your views here.
+
+   
 def index(request):
-    allposts = Post.objects.all().filter(status='published')
+   
+    allposts = Post.newmanager.all()
     return render(request,'blog/blogindex.html',{'allposts':allposts})
 
 
 
 def post_single(request, post):
     post = get_object_or_404(Post, slug=post, status='published')
-    category_list = Category.objects.exclude(name='default')
+    
     return render(request, 'blog/single.html', {'post': post })
 
 
@@ -45,6 +48,7 @@ def post_search(request):
             c=form.cleaned_data['c']
             if c is not None:
                 query &= Q(category=c)
+                query &= Q(status='published')
                 
 
     results = Post.objects.filter(query)

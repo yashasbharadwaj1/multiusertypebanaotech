@@ -19,7 +19,7 @@ all post
             <img class="card-img-top" src="{{post.postimg.url}}" alt="Card image cap">
             <div class="card-body">
               <h5 class="card-title">{{post.title|truncatechars:50}}</h5>
-              <p class="card-text">{{post.summary|truncatechars:15}}</p>
+              <p class="card-text">{{post.summary|truncatewords:15 }}</p>
              
             </div>
           </div>

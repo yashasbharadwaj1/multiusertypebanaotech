@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-from django.contrib.auth.models import User
+from multiusertype.models import User
 from django.urls import reverse
 from ckeditor_uploader.fields import RichTextUploadingField
 # Create your models here.
@@ -25,6 +25,8 @@ class Post(models.Model):
 
     
     title = models.CharField(max_length=250)
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='blog_posts',default=4)
     postimg=models.ImageField(upload_to='post_images',default='Success.png')
     category = models.ForeignKey(
         Category, on_delete=models.PROTECT, default=1)   
