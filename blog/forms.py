@@ -11,5 +11,12 @@ class PostSearchForm(forms.Form):
         self.fields['c'].label = 'Category'
 
 
+
+class DateTimeForm(forms.Form):
+    date_time_field = forms.DateTimeField(label='Date Time Field',
+                                          label_suffix=" : ", required=True, disabled=False,
+                                          input_formats=['%Y-%m-%d %H:%M:%S'],
+                                          widget=forms.DateTimeInput(attrs={'class': 'form-control'}),
+                                          error_messages={'required': "This field is required."})
    
        

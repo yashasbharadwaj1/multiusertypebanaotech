@@ -12,6 +12,9 @@ upload post
           <h1>List of all posts published by you</h1>
         </div>
         {% for post in yourposts %}
+       <!-- <button class="btn btn-danger btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Delete">!-->
+         
+        </button>
         <div class="card" style="width: 18rem;">
           <img class="card-img-top" src="{{post.postimg.url}}" alt="Card image cap">
             <a class="text-dark" href="{{post.get_absolute_url}}">
@@ -21,6 +24,9 @@ upload post
               <p class="card-text">{{post.summary|truncatewords:15 }}</p>
              
             </div>
+            <a href="{% url 'blog:delete' post.id %}" class="btn btn-danger " type="button"title="Delete">
+             Delete
+              </a>
           </div>
         {% endfor %}
       </div>

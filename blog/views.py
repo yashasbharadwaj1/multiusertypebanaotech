@@ -6,7 +6,8 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 # Create your views here.
-
+from datetime import datetime
+from.forms import  DateTimeForm
 @login_required(login_url='account:register')
 def viewupload(request):
     yourposts=Post.newmanager.all().filter(author=request.user.id)
@@ -18,7 +19,8 @@ def viewupload(request):
 def viewdraft(request):
     query=Q()
     query &= Q(author=request.user.id)
-    query &= Q(draft_status='D')
+    query &= Q(draft_status='D' )
+    query=Q(publish_status='')
     draftposts = Post.objects.filter(query)
 
     
@@ -44,7 +46,9 @@ def upload(request):
         if publish == '' and draft == '':
             messages.info(request,'you should enter P or D dont leave these sections empty')
             return redirect('blog:upload')
-        
+        if publish == 'D' and draft == 'P':
+            messages.info(request,'you should enter P for publish or D for draft ')
+            return redirect('blog:upload')
         post = Post.objects.create( title=title,author=author,postimg=postimg,summary=summary,content=content,slug=slug,publish_status=publish,draft_status=draft
                 )
         post.save()
@@ -53,19 +57,86 @@ def upload(request):
         entry.category=cat_blog
         entry.save()
         messages.info(request,'you post uploaded successfully')
-        return redirect('blog:viewupload')
+        if publish == 'P':
+            
+            return redirect('blog:viewupload')
+        elif draft == 'D':
+            return redirect('blog:viewdraft')
 
-
-
-
-       
-  
     return render(request, "blog/upload.html",{'category_list':category_list})
 
+def update(request, post_id):
+    pub_date= DateTimeForm()
+    updatepost = Post.objects.get(id=post_id)
+    category_list = Category.objects.exclude(name='default')
+    
+    
+    
+    return render (request,'blog/update.html',{'post':updatepost,'category_list':category_list,'publishdate':pub_date})
 
+def updaterecord(request, id):
+    author=request.user
    
+    temp=''
+    if request.GET:
+        temp = request.GET['date_time_field']
+        print(type(temp))
+    
+    title=request.POST['title']
+    category=request.POST['categoryselect']
+    if request.FILES.get('image') == None:
+        messages.info(request,'please upload a image ')
+    if request.FILES.get('image') != None:
+        postimg =request.FILES.get('image')
+    summary=request.POST['summary']
+    content=request.POST['content']
+    slug=request.POST['slug']
+    publish_status=request.POST['publish']
+    draft=request.POST['draft']
+    
+    updated = Post.objects.get(id=id)
+    updated.title=title
+    if publish_status == 'P':
+       updated.postimg=postimg
+       updated.summary=summary 
+       updated.content=content
+       updated.slug=slug
+       updated.publish_status=publish_status
+       updated.draft=''
+       updated.save()
+       entry = Post.objects.get(title=title)
+       cat_blog = Category.objects.get(name=category)
+       entry.category=cat_blog
+       entry.save()
+       return redirect('blog:viewupload')
+    else:
+        updated.postimg=postimg
+        updated.summary=summary 
+        updated.content=content
+        updated.slug=slug
+        updated.publish_status=''
+        updated.draft='D'
+        updated.save()
+        entry = Post.objects.get(title=title)
+        cat_blog = Category.objects.get(name=category)
+        entry.category=cat_blog
+        entry.save()
+        return redirect('blog:viewdraft')
+        
+       
+    
+   
+    """
+    if publish_status == 'P':
+        entry.draft = ''  
+        entry.save()
+        return redirect('blog:viewupload')
+    elif draft == 'D':
+        return redirect('blog:viewdraft')
+    return redirect('blog:viewupload')
+    """
+
 def index(request):
-   
     allposts = Post.newmanager.all()
     return render(request,'blog/blogindex.html',{'allposts':allposts})
 
@@ -113,3 +184,12 @@ def post_search(request):
     return render(request,'blog/search.html',
            {'form':form,'c':c,'results':results}
            )    
+    
+def delete(request, post_id):
+    delpost = get_object_or_404(Post, pk=post_id)
+    delpost.delete()
+
+    return redirect('blog:viewupload')
+
+
+  

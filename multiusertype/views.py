@@ -79,41 +79,7 @@ def login_view(request):
     form = LoginForm(request.POST or None)
     msg = None
 
-    
-    doctor_group, created = Group.objects.get_or_create(name="Doctor")
-    patient_group, created = Group.objects.get_or_create(name="Patient")
-    content_type = ContentType.objects.get_for_model(Post)
-    post_permission = Permission.objects.filter(content_type=content_type)
-    for perm in post_permission:
-        if perm.codename == "add_post":
-            doctor_group.permissions.add(perm) 
-        elif perm.codename == "view_post":
-            doctor_group.permissions.add(perm)
-            patient_group.permissions.add(perm)
-        elif perm.codename == "delete_post":
-            doctor_group.permissions.remove(perm)
-            patient_group.permissions.remove(perm)
-        else:
-            doctor_group.permissions.remove(perm)
-            patient_group.permissions.remove(perm)
 
-       
-
-
-    secondcontent_type = ContentType.objects.get_for_model(Category)
-    category_permission= Permission.objects.filter(content_type=secondcontent_type)
-    for perm in category_permission:
-        if perm.codename == "add_category":
-            doctor_group.permissions.add(perm)
-        elif perm.codename == "view_category":
-            doctor_group.permissions.add(perm)
-            patient_group.permissions.add(perm)
-        elif perm.codename == "delete_category":
-            patient_group.permissions.remove(perm)
-            doctor_group.permissions.remove(perm)
-        else:
-            doctor_group.permissions.remove(perm)
-            patient_group.permissions.remove(perm)
 
     
     if request.method == 'POST':
@@ -122,18 +88,11 @@ def login_view(request):
             password = form.cleaned_data.get('password')
             user = authenticate(username=username, password=password)
             if user is not None and user.is_Patient=='P':
-                user.groups.add(patient_group)
                 user.save()
-
-
                 login(request, user)
                 return redirect('account:patient')
             elif user is not None and user.is_Doctor=='D':
-                user.groups.add(doctor_group)
                 user.save()
-
-
-
                 login(request, user)
                 return redirect('account:doctor')
             else:

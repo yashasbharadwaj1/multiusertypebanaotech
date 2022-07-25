@@ -21,6 +21,11 @@ upload post
               <p class="card-text">{{post.summary|truncatewords:15 }}</p>
              
             </div>
+           <a href="{% url 'blog:update' post.id %}" class="btn btn-primary" type="button"title="Update">
+              Update
+            </a>
+            
+              
           </div>
         {% endfor %}
       </div>
