@@ -21,8 +21,8 @@
                     {% endfor %}
                   </span>
                   <form action="" method="POST" enctype="multipart/form-data">
+                     {% csrf_token %} 
                     
-                    {% csrf_token %}
 
                     <div class="form-group last mb-4">
                       <input type="text" name="username" placeholder="Username" >
