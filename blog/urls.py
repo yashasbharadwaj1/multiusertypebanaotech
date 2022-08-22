@@ -9,7 +9,10 @@ urlpatterns=[
    path('viewupload/', views.viewupload, name='viewupload'),
    path('viewdraft/', views.viewdraft, name='viewdraft'),
    path('search/',views.post_search,name='post_search'),
+
+   #path('alldoctors/', views.alldoctors, name='alldoctors'),
    
+
    path('<slug:post>/', views.post_single, name='post_single'),
    
    path('<int:post_id>/delete', views.delete, name='delete'),
