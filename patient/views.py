@@ -46,7 +46,7 @@ def appointment_book(request, id):#activate after clicking book now button
 	form = single_appointment
 	form.appointment_with=user_name
 	form.save()
-	return redirect('http://127.0.0.1:8000/patient/patient_appointment')
+	return redirect('patient:patient_appointments')
 	
 
 	
