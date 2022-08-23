@@ -57,7 +57,7 @@ def appointment_delete(request, id):
     single_appointment = Appointment.objects.get(id=id)
     single_appointment.delete()
     messages.success(request, 'Your appointment was updated.')
-    return redirect('http://127.0.0.1:8000/doctor/create_appointment/')
+    return redirect('doctor:doctor_appointment')
 
 
 def appointment_update(request, id):
@@ -80,7 +80,7 @@ def appointment_update(request, id):
         saving.user = request.user
         saving.save()
         messages.success(request, 'Post Created Sucessfully')
-        return redirect('http://127.0.0.1:8000/doctor/create_appointment/')
+        return redirect('doctor:doctor_appointment')
 
     appointments = {
         "query": appointment_list,
