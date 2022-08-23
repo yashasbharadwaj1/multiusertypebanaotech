@@ -7,7 +7,7 @@ from multiusertype.models import User
 
 def quick_appointment(request):
 	
-	user_name=request.user
+	user_name=request.user.get_username()
 	appointment_list = Appointment.objects.all().order_by("-user")
 	q=request.GET.get("q")#search start
 	if q:
@@ -23,7 +23,7 @@ def quick_appointment(request):
 
 def patient_appointments(request):#this section for my appointment
 
-	user_name=request.user
+	user_name=request.user.get_username()
 		#Getting all Post and Filter By Logged UserName
 	appointment_list = Appointment.objects.all().order_by("-id").filter(appointment_with=user_name)
     
